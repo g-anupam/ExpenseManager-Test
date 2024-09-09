@@ -37,9 +37,9 @@ int FetchTime();
 int displayCurrMonth();
 int writeCurrMonth();
 int nextdate(int * date, int * month, int * year);
+int mainloop();
 
-int WriteLastLogin(int date){
-  
+int WriteLastLogin(int date){  
   if (date == 0) date = CurrTime.date;
 
   LastLoginFile = fopen("expenses_2024/lastlogin.txt", "w");
@@ -87,7 +87,6 @@ int FetchTime(){
   printf("%d/%d/%d\n", CurrTime.date, CurrTime.month, CurrTime.year);
   strcat(CurrMonthFile,CurrMonthWord);
   strcat(CurrMonthFile, ".txt");
-
   //printf("%s\n", CurrMonthFile);
 
   return 0;
@@ -209,18 +208,26 @@ int nextdate(int * date, int * month, int * year) {
 
     return 0;
 }
-
-int menu(){ 
-  switch(ch){
-    
+int mainloop(){
+  int ch, x;
+  
+  while(x == 0){
+    printf("Welcome To ExpenseManager\n");
+    printf("Choose Your Option:\n  1. Write Current Month\n  2. Display Current Month\n");
+    printf("Enter Choice:\n");
+    scanf("%d", &ch);
+    switch(ch){
+      case 1: if(writeCurrMonth() != 0) return -1; break;
+      case 2: if(displayCurrMonth() != 0) return -1; break;
+      default: printf("Thank you\n"); x == 1; break;
+    }
   }
-
-  return 0;
-
 }
+
 
 int main(){
   // Initialize program by calling FetchTime, readLastLogin
+
   if (FetchTime() != 0){
     perror("FetchTime");
     return -1;
@@ -229,8 +236,11 @@ int main(){
     perror("readLastLogin");
     return -1;
   }
-
-  writeCurrMonth();
-  displayCurrMonth();
+  if (mainloop() == -1){
+    printf("Error\n");
+    return -1;
+  }
+  //writeCurrMonth();
+  //displayCurrMonth();
   return 0;
 }
